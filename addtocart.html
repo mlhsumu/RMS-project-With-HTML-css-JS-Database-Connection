@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team WebWeavers</title>
+    <link rel="stylesheet" href="index.css" />
+    <script
+      src="https://kit.fontawesome.com/f30fac2c61.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      /* Add your custom CSS styles here */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        padding-top: 60px;
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto; /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on screen size */
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .input-field {
+        margin-bottom: 15px;
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <h1>FlavorWaves Nexus</h1>
+        </div>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#food">Foods</a></li>
+          <li><a href="#trend">Trends</a></li>
+          <li><a href="#review">Reviews</a></li>
+          <li><a href="#blog">Blog</a></li>
+          <li><a href="#signup">Sign Up</a></li>
+          <li><a href="#signin">Sign In</a></li>
+          <li>
+            <a href="#" onclick="openCartModal()"
+              ><div class="icon-card"><i class="fa fa-shopping-cart"></i></div
+            ></a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="foods">
+        <div class="card">
+          <div class="content">
+            <img src="food1.JPG" alt="" />
+            <p>Rooster Chicken Rice Bowl - $10</p>
+            <input type="number" id="quantity1" value="1" min="1" />
+            <button
+              class="cart"
+              onclick="addToCart('Rooster Chicken Rice Bowl', 10, 'quantity1')"
+            >
+              Add To Cart
+            </button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="content">
+            <img src="food2.jpg" alt="" />
+            <p>Pudding - $5</p>
+            <input type="number" id="quantity2" value="1" min="1" />
+            <button class="cart" onclick="addToCart('Pudding', 5, 'quantity2')">
+              Add To Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart Modal -->
+      <div id="cartModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeCartModal()">&times;</span>
+          <h2>Cart Items</h2>
+          <div id="cartItems"></div>
+          <p id="totalPrice"></p>
+          <h3>Customer Information</h3>
+          <input
+            type="text"
+            id="customerName"
+            class="input-field"
+            placeholder="Name"
+            required
+          />
+          <input
+            type="tel"
+            id="customerPhone"
+            class="input-field"
+            placeholder="Phone"
+            required
+          />
+          <input
+            type="text"
+            id="customerAddress"
+            class="input-field"
+            placeholder="Address"
+            required
+          />
+          <select id="paymentMethod" class="input-field">
+            <option value="Credit Card">Credit Card</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Cash on Delivery">Cash on Delivery</option>
+          </select>
+          <button onclick="submitOrder()">Submit Order</button>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="text">
+          <h3>About Us</h3>
+          <p>
+            Welcome to FlavorWaves Nexus, where culinary excellence meets warm
+            hospitality.
+          </p>
+        </div>
+        <div class="text">
+          <h3>Our Food</h3>
+          <p>Quality, Affordable, Best Price</p>
+        </div>
+        <div class="text">
+          <h3>Offers</h3>
+          <p>20% OFF, Free 1st meal</p>
+        </div>
+        <div class="text">
+          <h3>Connect Us</h3>
+          <p>LinkedIn, Facebook, Instagram, Twitter</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let cart = [];
+
+      function addToCart(itemName, price, quantityId) {
+        const quantity = parseInt(document.getElementById(quantityId).value);
+        const item = { name: itemName, price: price, quantity: quantity };
+        cart.push(item);
+        updateCart();
+      }
+
+      function updateCart() {
+        let totalPrice = 0;
+        let cartContent = "";
+
+        cart.forEach((item) => {
+          const itemTotal = item.price * item.quantity;
+          totalPrice += itemTotal;
+          cartContent += `<p>${item.quantity} * ${
+            item.name
+          } - $${itemTotal.toFixed(2)}</p>`;
+        });
+
+        document.getElementById("cartItems").innerHTML = cartContent;
+        document.getElementById(
+          "totalPrice"
+        ).innerText = `Total Price: $${totalPrice.toFixed(2)}`;
+        document.getElementById("cartModal").style.display = "block";
+      }
+
+      function closeCartModal() {
+        document.getElementById("cartModal").style.display = "none";
+      }
+
+      function openCartModal() {
+        updateCart();
+      }
+
+      function submitOrder() {
+        const name = document.getElementById("customerName").value;
+        const phone = document.getElementById("customerPhone").value;
+        const address = document.getElementById("customerAddress").value;
+        const paymentMethod = document.getElementById("paymentMethod").value;
+
+        const orderData = {
+          name: name,
+          phone: phone,
+          address: address,
+          paymentMethod: paymentMethod,
+          cart: cart,
+          totalPrice: parseFloat(
+            document
+              .getElementById("totalPrice")
+              .innerText.replace("Total Price: $", "")
+          ),
+        };
+
+        $.ajax({
+          url: "api.php",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(orderData),
+          success: function (data) {
+            alert(data.message);
+            if (data.success) {
+              cart = [];
+              closeCartModal();
+            }
+          },
+          error: function (error) {
+            console.error("Error:", error);
+            alert("An error occurred while processing your order.");
+          },
+          complete: function () {
+           
+            $("#loading").hide();
+          },
+        });
+      }
+    </script>
+  </body>
+</html>
